@@ -1,32 +1,260 @@
 <head>
     <meta charset="utf-8"/>
-    <title> Having a Life </title>
+    <title>NR-IQA demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="public/css/style.css" rel="stylesheet"/>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
+    <header align="center" style="text-align: -moz-center;"> 
+        <h2> No-Reference Image Quality Assessment Demo Web App </h2>
+    </header>
 </head>
 
-<img src="http://i1311.photobucket.com/albums/s670/xxtaylorlmxx/puglife_zpsa07fe949.jpg" alt="pug face">
+<body class="container">
 
-<body>
-<div class="container" >
 
-    <!-- <dl class="dl-horizontal">
-        <dt> 
-            How to play
-        </dt>
-        <dd>
-            Change an image quality threshold by moving the slider, pick the threshold at which you cannot preceive quality degradation<br/>
-            Note that you have to move the slider in order to proceed to next picture <br/>
-            Your progress is automatically saved, but you will need to start fresh when you switch to another device.
-        </dd>
-    </dl> -->
+<div class="container-fluid">
+    <ul class="nav navbar-nav">
+        <li> <a href="/" > Refresh Pictures </a> </li>
+        <li>
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <span class="btn btn-default btn-file">
+                        Upload My Pics <input id="fileUpload" type="file" multiple>
+                    </span>
+                </span>
+                <br/>
+                <input type="text" class="form-control" style="width: 125px"readonly>
+            </div>
+        </li>
+    </ul>
 
-    <footer style="margin-bottom: 20px">
-        <strong>Feedback?</strong>
-        <br/>
-        <a href="mailto:jiawen.zhou0627@gmail.com">
-            contact me here</a>
-    </footer>
+    <form action="/" class="navbar-form navbar-left" method="post" id="post">
+        <div id="input_holder"> </div>
+        <input type="hidden" id="pics_uid" name="pics_uid" value = ""/>
+        <input type="hidden" id="num_uploaded_pics" name="num_uploaded_pics" value = ""/>
+        <input type="submit" value="Run" class="btn btn-success" id="run_test" disabled> 
+    </form>
+
 </div>
+
+<div class="container">
+<!-- <div class="container-fluid"> -->
+    <div id="prediction_list" value="{{prediction_list}}"></div>
+    <ul class="slides" id="default_slide" visibility="visible" style="top: 8%">
+    <input type="radio" name="radio-btn" id="img-1" checked />
+    <li class="slide-container">
+        <div class="slide row" align="center">
+            
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[0]}}"/> 
+                <ul class="list-group" style="margin-top:3%" >
+                
+                <li class="list-group-item list-group-item-warning"  style="margin-right: 5%"> <h4> Prediction: {{prediction_list[0]}} </h4> </li>
+                <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[0]}}  </h4> </li>
+            </ul>                  
+        </div>
+        <div class="nav">
+            <label for="img-9" class="prev">&#x2039;</label>
+            <label for="img-2" class="next">&#x203a;</label>
+        </div>
+    </li>
+
+    <input type="radio" name="radio-btn" id="img-2" />
+    <li class="slide-container">
+        <div class="slide row" align="center">
+             
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[1]}}"/>
+            <ul class="list-group" style="margin-top:3%" > 
+            
+            <li class="list-group-item list-group-item-warning" style="margin-right: 5%"> <h4> Prediction: {{prediction_list[1]}} </h4> </li>
+            <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[1]}}  </h4> </li>           
+            </ul>
+        </div>
+        <div class="nav">
+            <label for="img-1" class="prev">&#x2039;</label>
+            <label for="img-3" class="next">&#x203a;</label>
+        </div>
+    </li>
+
+    <input type="radio" name="radio-btn" id="img-3" />
+    <li class="slide-container">
+        <div class="slide row" align="center">            
+             
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[2]}}"/>
+            <ul class="list-group" style="margin-top:3%" >
+            
+            <li class="list-group-item list-group-item-warning" style="margin-right: 5%"> <h4> Prediction: {{prediction_list[2]}} </h4> </li>
+            <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[2]}}  </h4> </li>
+            </ul>
+        </div>
+        <div class="nav">
+            <label for="img-2" class="prev">&#x2039;</label>
+            <label for="img-4" class="next">&#x203a;</label>
+        </div>
+    </li>
+
+    <input type="radio" name="radio-btn" id="img-4" checked />
+    <li class="slide-container">
+        <div class="slide row" align="center">
+              
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[3]}}"/>
+            <ul class="list-group" style="margin-top:3%" >                
+            
+            <li class="list-group-item list-group-item-warning"  style="margin-right: 5%"> <h4> Prediction: {{prediction_list[3]}} </h4> </li>
+            <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[3]}}  </h4> </li>
+            </ul> 
+        </div>
+        <div class="nav">
+            <label for="img-3" class="prev">&#x2039;</label>
+            <label for="img-5" class="next">&#x203a;</label>
+        </div>
+    </li>
+    <input type="radio" name="radio-btn" id="img-5" checked />
+    <li class="slide-container">
+        <div class="slide row" align="center">
+            
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[4]}}"/>
+            <ul class="list-group" style="margin-top:3%" >                
+            
+            <li class="list-group-item list-group-item-warning"  style="margin-right: 5%"> <h4> Prediction: {{prediction_list[4]}} </h4> </li>
+            <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[4]}}  </h4> </li>
+            </ul> 
+        </div>
+        <div class="nav">
+            <label for="img-4" class="prev">&#x2039;</label>
+            <label for="img-6" class="next">&#x203a;</label>
+        </div>
+    </li>
+    <input type="radio" name="radio-btn" id="img-6" checked />
+    <li class="slide-container">
+        <div class="slide row" align="center">
+            
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[5]}}"/>
+             <ul class="list-group" style="margin-top:3%" >                
+            
+            <li class="list-group-item list-group-item-warning"  style="margin-right: 5%"> <h4> Prediction: {{prediction_list[5]}} </h4> </li>
+            <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[5]}}  </h4> </li>
+            </ul>
+        </div>
+        <div class="nav">
+            <label for="img-5" class="prev">&#x2039;</label>
+            <label for="img-7" class="next">&#x203a;</label>
+        </div>
+    </li>
+
+    <input type="radio" name="radio-btn" id="img-7" checked />
+    <li class="slide-container">
+        <div class="slide row" align="center">
+            
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[6]}}"/>
+            <ul class="list-group" style="margin-top:3%" >                
+            
+            <li class="list-group-item list-group-item-warning"  style="margin-right: 5%"> <h4> Prediction: {{prediction_list[6]}} </h4> </li>
+            <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[6]}}  </h4> </li>
+            </ul>
+        </div>
+        <div class="nav">
+            <label for="img-6" class="prev">&#x2039;</label>
+            <label for="img-8" class="next">&#x203a;</label>
+        </div>
+    </li>
+    <input type="radio" name="radio-btn" id="img-8" checked />
+    <li class="slide-container">
+        <div class="slide row" align="center">
+            
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[7]}}"/>
+            <ul class="list-group" style="margin-top:3%" >        
+            
+            <li class="list-group-item list-group-item-warning" style="margin-right: 5%"> <h4> Prediction: {{prediction_list[7]}} </h4> </li>
+            <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[7]}}  </h4> </li>
+            </ul> 
+        </div>
+        <div class="nav">
+            <label for="img-7" class="prev">&#x2039;</label>
+            <label for="img-9" class="next">&#x203a;</label>
+        </div>
+    </li>
+    <input type="radio" name="radio-btn" id="img-9" checked />
+    <li class="slide-container">
+        <div class="slide row" align="center">
+            
+            <img class="img-responsive" alt="image unavailable" src="/splits/{{name_list[8]}}"/>
+            <ul class="list-group" style="margin-top:3%" >
+            
+            <li class="list-group-item list-group-item-warning" style="margin-right: 5%"> <h4> Prediction: {{prediction_list[8]}} </h4> </li>
+                <li class="list-group-item list-group-item-warning"> <h4> Label: {{label_list[8]}}  </h4> </li>
+            </ul>
+        </div>
+        <div class="nav">
+            <label for="img-8" class="prev">&#x2039;</label>
+            <label for="img-1" class="next">&#x203a;</label>
+        </div>
+    </li>
+    </ul>
+    
+</div>
+
 </body>
+
+
+
+<script type="text/javascript">
+    $(document).ready( function() {
+        $('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+            
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;
+            
+            if( input.length ) {
+                input.val(log);
+            } else {
+                if( log ) alert(log);
+            }
+            
+        });
+    });
+     $("#fileUpload").on('change', function () {
+        var input = $(this),
+          //Get count of selected files
+          countFiles = input.get(0).files ? input.get(0).files.length : 1,
+          label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [countFiles, label]);
+        
+
+         var imgPath = $(this)[0].value;
+         var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+         
+         var input_holder = $("#input_holder");
+         input_holder.empty();
+
+         if (extn == "bmp" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+             if (typeof (FileReader) != "undefined") {
+                 //loop for each file selected for uploaded
+                 for (var i = 0; i < countFiles; i++) {                    
+                     var reader = new FileReader();
+                     reader.onload = function (e) {
+                         n = Math.floor((Math.random() * 1000) + 1);
+                         m = Math.floor((Math.random() * 1000) + 1);
+                         document.getElementById("pics_uid").value += (n+""+m + " ");
+                         $("<input />", {
+                            "type": "hidden",
+                            "id": "image_data_" + n+""+m,
+                            "name": "image_data_" + n+""+m,
+                            "value": e.target.result
+                         }).appendTo(input_holder);
+                     }
+                     reader.readAsDataURL($(this)[0].files[i]);
+                 }
+                 document.getElementById("num_uploaded_pics").value = countFiles;
+                 document.getElementById("run_test").disabled = false;
+                 document.getElementById("default_slide").visibility = "hidden";
+             } else {
+                 alert("This browser does not support FileReader.");
+             }
+         } else {
+             alert("Pls select only images");
+         }
+ });
+</script>

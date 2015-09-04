@@ -1,0 +1,122 @@
+<head>
+    <meta charset="utf-8"/>
+    <title>NR-IQA demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="public/css/style.css" rel="stylesheet"/>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <header align="center" style="text-align: -moz-center;"> 
+        <h2> No-Reference Image Quality Assessment Demo Web App </h2>
+    </header>
+</head>
+
+<body>
+
+<div class="container-fluid">
+    <ul class="nav navbar-nav">
+        <li> <a href="/" > Refresh Pictures </a> </li>
+        <li>
+            <div class="input-group">
+                <span class="input-group-btn">
+                    <span class="btn btn-default btn-file">
+                        Upload My Pics <input id="fileUpload" type="file" multiple>
+                    </span>
+                </span>
+                <br/>
+                <input type="text" class="form-control" style="width: 125px"readonly>
+            </div>
+        </li>
+    </ul>
+
+    <form action="/" class="navbar-form navbar-left" method="post" id="post">
+        <div id="input_holder"> </div>
+        <input type="hidden" id="pics_uid" name="pics_uid" value = ""/>
+        <input type="hidden" id="num_uploaded_pics" name="num_uploaded_pics" value = ""/>
+        <input type="submit" value="Run" class="btn btn-success" id="run_test" disabled> 
+    </form>
+
+</div>
+
+<div id="uploads_holder" class="container">
+    <ul class="slides" style="top: 8%">
+        {% for i in range(0, len(uid_list)) %}    
+            <input type="radio" name="radio-btn" id="radio-btn-{{uid_list[i]}}" checked />
+            <li class="slide-container">    
+                <div class="slide row" align="center" id="slide-img-{{uid_list[i]}}">                    
+                    <img class="img-responsive" alt="image unavailable" id="custom-image-{{uid_list[i]}}") src="{{img_src_list[uid_list[i]]}}"/>                     
+                    <ul class="list-group" style="margin-top:3%" >
+                        <li class="list-group-item list-group-item-success"><h4> {{certainty_list[uid_list[i]]}} </h4></li>
+                        <li class="list-group-item list-group-item-warning"> <h4> Prediction: {{prediction_list[uid_list[i]]}} </h4> </li>
+                    </ul> 
+                </div>
+                <div class="nav">
+                    <label for="radio-btn-{{uid_list[(i-1)%len(uid_list)]}}" class="prev">&#x2039;</label>
+                    <label for="radio-btn-{{uid_list[(i+1)%len(uid_list)]}}" class="next">&#x203a;</label>
+                </div>
+            </li>     
+        {% end %}
+    </ul>
+</div>
+
+</body>
+
+
+<script type="text/javascript">
+    $(document).ready( function() {
+        $('.btn-file :file').on('fileselect', function(event, numFiles, label) {        
+            var input = $(this).parents('.input-group').find(':text'),
+                log = numFiles > 1 ? numFiles + ' files selected' : label;       
+            if( input.length ) {
+                input.val(log);
+            } else {
+                if( log ) alert(log);
+            }            
+        });
+    });
+
+     $("#fileUpload").on('change', function () {
+        var input = $(this),
+          //Get count of selected files
+          countFiles = input.get(0).files ? input.get(0).files.length : 1,
+          label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [countFiles, label]);
+
+         var imgPath = $(this)[0].value;
+         var extn = imgPath.substring(imgPath.lastIndexOf('.') + 1).toLowerCase();
+         
+         var input_holder = $("#input_holder");
+         input_holder.empty();
+
+         if (extn == "bmp" || extn == "png" || extn == "jpg" || extn == "jpeg") {
+             if (typeof (FileReader) != "undefined") {
+     
+                 //loop for each file selected for uploaded.
+                 for (var i = 0; i < countFiles; i++) {
+                    
+                     var reader = new FileReader();
+                     reader.onload = function (e) {
+                         n = Math.floor((Math.random() * 1000) + 1);
+                         m = Math.floor((Math.random() * 1000) + 1);
+                         document.getElementById("pics_uid").value += (n+""+m + " ");
+                         $("<input />", {
+                            "type": "hidden",
+                            "id": "image_data_" + n+""+m,
+                            "name": "image_data_" + n+""+m,
+                            "value": e.target.result
+                         }).appendTo(input_holder);
+                     }
+
+                     reader.readAsDataURL($(this)[0].files[i]);
+                 }
+                 document.getElementById("num_uploaded_pics").value = countFiles;
+                 document.getElementById("run_test").disabled = false;
+             } else {
+                 alert("This browser does not support FileReader.");
+             }
+         } else {
+             alert("Pls select only images");
+         }
+ });
+</script>
